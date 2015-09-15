@@ -81,9 +81,6 @@ void APauseMenu::NotifyHitBoxClick(FName BoxName)
 	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
 	if (BoxName.ToString() == ResumeName.ToString())
 	{
-		MyController->bShowMouseCursor = false;
-		MyController->bEnableClickEvents = false;
-		MyController->bEnableMouseOverEvents = false;
 		UGameplayStatics::SetGamePaused(GetWorld(), false);
 	}
 	if (BoxName.ToString() == QuitGameName.ToString())
