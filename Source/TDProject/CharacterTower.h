@@ -17,13 +17,25 @@ private:
 
 public:
 
+	UPROPERTY(EditAnywhere, Category = Characteristics )
 	FName characterName;
-	//Each character has base stats which with other modifications convert to  
+	//Each character has base stats which with other modifications convert to
+	UPROPERTY(EditAnywhere)
 	int32 baseAutoAttackDamage;		
+
+	UPROPERTY(EditAnywhere, Category = Characteristics)
 	int32 baseAggroRadius;		
+
+	UPROPERTY(EditAnywhere, Category = Characteristics)
 	int32 basePurchaseCost;	
+
+	UPROPERTY(EditAnywhere, Category = Characteristics)
 	int32 currentLevel;
+
+	UPROPERTY(EditAnywhere, Category = Characteristics)
 	double baseFirerate;
+
+	UPROPERTY(EditAnywhere, Category = Characteristics)
 	double baseProjectileSpeed;
 
 
