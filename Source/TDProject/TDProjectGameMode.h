@@ -13,7 +13,8 @@ class TDPROJECT_API ATDProjectGameMode : public AGameMode
 {
 	GENERATED_BODY()
 	
-	
+public:
+	ATDProjectGameMode(const FObjectInitializer& ObjectInitializer);
 	
 	
 };

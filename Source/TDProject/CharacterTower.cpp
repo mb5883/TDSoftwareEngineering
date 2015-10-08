@@ -14,9 +14,7 @@ ACharacterTower::ACharacterTower()
 	OnClicked.AddDynamic(this, &ACharacterTower::OnClick );
 	OnReleased.AddDynamic(this, &ACharacterTower::OnRelease);
 	OnBeginCursorOver.AddDynamic(this, &ACharacterTower::OnBeginCursor);
-	OnEndCursorOver.AddDynamic(this, &ACharacterTower::OnEndCursor);
-
-	
+	OnEndCursorOver.AddDynamic(this, &ACharacterTower::OnEndCursor);	
 }
 
 // Called when the game starts or when spawned

@@ -19,7 +19,7 @@ class TDPROJECT_API APauseMenu : public AHUD
 
 	FName ResumeName;			//Resume the game
 	FName OptionName;			//Access options
-	FName QuitLevelName;		//Exit the current level
+	FName QuitLevelName;			//Exit the current level
 	FName QuitGameName;			//Quit the game
 
 	/*Placements for hitbox and text*/
