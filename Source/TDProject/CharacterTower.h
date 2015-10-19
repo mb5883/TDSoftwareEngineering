@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere, Category = Characteristics )
 	FName characterName;
 	//Each character has base stats which with other modifications convert to
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = Characteristics)
 	int32 baseAutoAttackDamage;		
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
@@ -38,6 +38,11 @@ public:
 	UPROPERTY(EditAnywhere, Category = Characteristics)
 	double baseProjectileSpeed;
 
+	UPROPERTY(EditAnywhere, Category = Characteristics)
+	double animationRate;
+
+	//UPROPERTY(EditAnywhere, Category = Characteristics)
+	class UPaperSpriteComponent* Sprite;
 
 	// Sets default values for this actor's properties
 	ACharacterTower();
