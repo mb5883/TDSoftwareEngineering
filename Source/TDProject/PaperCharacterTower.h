@@ -2,14 +2,18 @@
 
 #pragma once
 
+#include "../../../../../../../../Program Files/Epic Games/4.9/Engine/Plugins/2D/Paper2D/Source/Paper2D/Classes/PaperFlipbookActor.h"
 #include "GameFramework/Actor.h"
-#include "CharacterTower.generated.h"
+#include "PaperCharacterTower.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class TDPROJECT_API ACharacterTower : public AActor
+class TDPROJECT_API APaperCharacterTower : public APaperFlipbookActor
 {
 	GENERATED_BODY()
-	
+
 private:
 	bool bFollowCursor = false;		//Is the object currently tracking the cursor
 	bool bIsValidPlacement = true;  //Is the object allowed to be placed where the mouse cursor is
@@ -18,41 +22,41 @@ private:
 
 public:
 
-	UPROPERTY(EditAnywhere, Category = Characteristics )
-	FName characterName;
+	UPROPERTY(EditAnywhere, Category = Characteristics)
+		FName characterName;
 	//Each character has base stats which with other modifications convert to
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	int32 baseAutoAttackDamage;		
+		int32 baseAutoAttackDamage;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	int32 baseAggroRadius;		
+		int32 baseAggroRadius;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	int32 basePurchaseCost;	
+		int32 basePurchaseCost;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	int32 currentLevel;
+		int32 currentLevel;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	double baseFirerate;
+		double baseFirerate;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	double baseProjectileSpeed;
+		double baseProjectileSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	double animationRate;
+		double animationRate;
 
 	UPROPERTY()
-	USphereComponent* MyCollisionComp;
+		USphereComponent* MyCollisionComp;
 
 	// Sets default values for this actor's properties
-	ACharacterTower();
+	APaperCharacterTower();
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
+
 	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	//Called when it is clicked on by the mouse
 	void OnClick();
@@ -62,5 +66,5 @@ public:
 	void OnBeginCursor();
 
 	void OnEndCursor();
-	
+
 };

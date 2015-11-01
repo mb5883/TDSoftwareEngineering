@@ -1,37 +1,40 @@
+// Fill out your copyright notice in the Description page of Project Settings.
 
 #include "TDProject.h"
-#include "CharacterTower.h"
+#include "PaperCharacterTower.h"
 
 
 // Sets default values
-ACharacterTower::ACharacterTower()
+APaperCharacterTower::APaperCharacterTower()
 {
- 	// Set this actor to call Tick() every frame.
+	// Set this actor to call Tick() every frame.
 	PrimaryActorTick.bCanEverTick = true;
 	bCanBeDamaged = false;	//Immune to attacks from other towers
 
+	/*
 	MyCollisionComp = CreateDefaultSubobject<USphereComponent>(FName(TEXT("CollisionComponent")));
 	MyCollisionComp->RelativeLocation = FVector::ZeroVector;
 	MyCollisionComp->SetSphereRadius(20.0f);
+	*/
 
 	//Add the functionality needed to intercept mouse events
-	OnClicked.AddDynamic(this, &ACharacterTower::OnClick );
-	OnReleased.AddDynamic(this, &ACharacterTower::OnRelease);
-	OnBeginCursorOver.AddDynamic(this, &ACharacterTower::OnBeginCursor);
-	OnEndCursorOver.AddDynamic(this, &ACharacterTower::OnEndCursor);	
+	OnClicked.AddDynamic(this, &APaperCharacterTower::OnClick);
+	OnReleased.AddDynamic(this, &APaperCharacterTower::OnRelease);
+	OnBeginCursorOver.AddDynamic(this, &APaperCharacterTower::OnBeginCursor);
+	OnEndCursorOver.AddDynamic(this, &APaperCharacterTower::OnEndCursor);
 }
 
 // Called when the game starts or when spawned
-void ACharacterTower::BeginPlay()
+void APaperCharacterTower::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 	P1Controller = GetWorld()->GetFirstPlayerController();
 }
 
 // Called every frame
-void ACharacterTower::Tick( float DeltaTime )
+void APaperCharacterTower::Tick(float DeltaTime)
 {
-	Super::Tick( DeltaTime );
+	Super::Tick(DeltaTime);
 	if (bFollowCursor)
 	{
 		//Get the location relative to where the mouse is pointing 
@@ -55,30 +58,30 @@ void ACharacterTower::Tick( float DeltaTime )
 			FCollisionShape::MakeSphere(baseAggroRadius),
 			//collision parameters
 			FCollisionQueryParams());
-
+		
 		if (overlaps.Num() > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Object Detected within range"));
+			UE_LOG(LogTemp, Warning, TEXT("Object Detected within range(paper)"));
 		}
 	}
 }
 
-void ACharacterTower::OnClick()
+void APaperCharacterTower::OnClick()
 {
 	bFollowCursor = true;
 }
-void ACharacterTower::OnRelease()
+void APaperCharacterTower::OnRelease()
 {
 	//If the placement is valid, then we can let go of mouse control
 	bFollowCursor = false;
 }
 
-void ACharacterTower::OnBeginCursor()
+void APaperCharacterTower::OnBeginCursor()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Mouse Detected"));
 }
 
-void ACharacterTower::OnEndCursor()
+void APaperCharacterTower::OnEndCursor()
 {
 
 }
