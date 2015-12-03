@@ -1,11 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// This would be a hud setup for purchasing a character tower
 
 #include "TDProject.h"
 #include "TowerPurchaseHud.h"
 
 ATowerPurchaseHud::ATowerPurchaseHud(const FObjectInitializer& PCIP) : Super(PCIP)
 {
-	//static ConstructorHelpers::FClassFinder<AActor> PlayerPawnBPClass(TEXT("/Game/Content/BluePrints/testText"));
+	//static ConstructorHelpers::FClassFinder<AActor> PlayerPawnBPClass(TEXT("/Game/Content/BluePrints/KongotheBongo"));
 }
 void ATowerPurchaseHud::ShowHUD()
 {

@@ -13,8 +13,11 @@ class TDPROJECT_API ACharacterTower : public AActor
 private:
 	bool bFollowCursor = false;		//Is the object currently tracking the cursor
 	bool bIsValidPlacement = true;  //Is the object allowed to be placed where the mouse cursor is
+	bool bIsAutoAttackReady = true; //Checks to see if it is possible to autoattack
 	APlayerController* P1Controller; //Get the first player's controller since it controls the mouse functions
 	TArray<FOverlapResult> overlaps; //Stores all objects within a radius of attack
+
+	FTimerHandle autoAttackTimer;	// Timer when the character can attack again
 
 public:
 
@@ -34,16 +37,15 @@ public:
 	int32 currentLevel;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	double baseFirerate;
+	float baseFirerate;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	double baseProjectileSpeed;
+	float baseProjectileSpeed;
 
 	UPROPERTY(EditAnywhere, Category = Characteristics)
-	double animationRate;
+	float animationRate;
 
-	UPROPERTY()
-	USphereComponent* MyCollisionComp;
+	 
 
 	// Sets default values for this actor's properties
 	ACharacterTower();
@@ -55,12 +57,25 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	//Called when it is clicked on by the mouse
+	UFUNCTION()
 	void OnClick();
 
+	//Called when it is released by the mouse
+	UFUNCTION()
 	void OnRelease();
 
+	//Called when it is hovering over by the mouse
+	UFUNCTION()
 	void OnBeginCursor();
 
+	//Called when it is mouse cursor is no longer on it
+	UFUNCTION()
 	void OnEndCursor();
+
+	//Called to check an enemy is within attacking range
+	void CheckAutoAttack();
+
+	//called to reactivate autoattack
+	void EndAutoAttackCooldown();
 	
 };

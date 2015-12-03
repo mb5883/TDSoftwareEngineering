@@ -10,10 +10,6 @@ ACharacterTower::ACharacterTower()
 	PrimaryActorTick.bCanEverTick = true;
 	bCanBeDamaged = false;	//Immune to attacks from other towers
 
-	MyCollisionComp = CreateDefaultSubobject<USphereComponent>(FName(TEXT("CollisionComponent")));
-	MyCollisionComp->RelativeLocation = FVector::ZeroVector;
-	MyCollisionComp->SetSphereRadius(20.0f);
-
 	//Add the functionality needed to intercept mouse events
 	OnClicked.AddDynamic(this, &ACharacterTower::OnClick );
 	OnReleased.AddDynamic(this, &ACharacterTower::OnRelease);
@@ -41,25 +37,7 @@ void ACharacterTower::Tick( float DeltaTime )
 	}
 	else
 	{
-		//If an enemy is within a certain radius, attack and begin a cooldown timer for the next attack
-		GetWorld()->OverlapMultiByChannel(
-			//output list
-			overlaps,
-			//origin location
-			this->GetActorLocation(),
-			//origin rotation
-			FQuat::Identity,
-			//collision channel
-			ECollisionChannel::ECC_Pawn,
-			//collision primitive
-			FCollisionShape::MakeSphere(baseAggroRadius),
-			//collision parameters
-			FCollisionQueryParams());
-
-		if (overlaps.Num() > 0)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Object Detected within range"));
-		}
+		CheckAutoAttack();
 	}
 }
 
@@ -81,4 +59,52 @@ void ACharacterTower::OnBeginCursor()
 void ACharacterTower::OnEndCursor()
 {
 
+}
+
+void ACharacterTower::CheckAutoAttack()
+{
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);	//We don't want to trigger attack ourselves
+
+	//If an enemy is within a certain radius, attack and begin a cooldown timer for the next attack
+	GetWorld()->OverlapMultiByChannel(
+		//output list
+		overlaps,
+		//origin location
+		this->GetActorLocation(),
+		//origin rotation
+		FQuat::Identity,
+		//collision channel
+		ECollisionChannel::ECC_Pawn,
+		//collision primitive
+		FCollisionShape::MakeSphere(baseAggroRadius),
+		//collision parameters
+		CollisionParams);
+
+	bool isEnemy = false;
+	for (int32 i = 0; i < overlaps.Num(); i++)
+	{
+		/*
+		Replace ACharacter with appropriate enemy class
+		Make sure to make a generic enemy class that other enemy types based off of if you want to minimize the workload
+		*/
+		ACharacter* enemy = Cast<ACharacter>(overlaps[i].GetActor());
+		if (enemy != nullptr)
+		{
+			isEnemy = true;
+		}
+	}
+	if (isEnemy && bIsAutoAttackReady)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Attack %s"), *(characterName.ToString()));
+		bIsAutoAttackReady = false;
+		GetWorldTimerManager().SetTimer(autoAttackTimer, this, &ACharacterTower::EndAutoAttackCooldown, baseFirerate);
+	}
+	
+}
+
+void ACharacterTower::EndAutoAttackCooldown()
+{
+	bIsAutoAttackReady = true;
+	overlaps.Empty();
 }

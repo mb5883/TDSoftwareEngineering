@@ -1,4 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+/*
+This is for the most part superior to character tower since it can modify the flipbook and the sprite; 
+however intellisense(automatic syntax checker) isn't working for properly for this source code so it is showing errors that it shouldn't
+therefore, both the original version and this version which handles sprites
+*/
 
 #include "TDProject.h"
 #include "PaperCharacterTower.h"
@@ -11,11 +15,6 @@ APaperCharacterTower::APaperCharacterTower()
 	PrimaryActorTick.bCanEverTick = true;
 	bCanBeDamaged = false;	//Immune to attacks from other towers
 
-	/*
-	MyCollisionComp = CreateDefaultSubobject<USphereComponent>(FName(TEXT("CollisionComponent")));
-	MyCollisionComp->RelativeLocation = FVector::ZeroVector;
-	MyCollisionComp->SetSphereRadius(20.0f);
-	*/
 
 	//Add the functionality needed to intercept mouse events
 	OnClicked.AddDynamic(this, &APaperCharacterTower::OnClick);
@@ -44,31 +43,15 @@ void APaperCharacterTower::Tick(float DeltaTime)
 	}
 	else
 	{
-		//If an enemy is within a certain radius, attack and begin a cooldown timer for the next attack
-		GetWorld()->OverlapMultiByChannel(
-			//output list
-			overlaps,
-			//origin location
-			this->GetActorLocation(),
-			//origin rotation
-			FQuat::Identity,
-			//collision channel
-			ECollisionChannel::ECC_Pawn,
-			//collision primitive
-			FCollisionShape::MakeSphere(baseAggroRadius),
-			//collision parameters
-			FCollisionQueryParams());
+		CheckAutoAttack();
 		
-		if (overlaps.Num() > 0)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Object Detected within range(paper)"));
-		}
 	}
 }
 
 void APaperCharacterTower::OnClick()
 {
 	bFollowCursor = true;
+	GetRenderComponent()->SetSpriteColor(FLinearColor::White);
 }
 void APaperCharacterTower::OnRelease()
 {
@@ -78,10 +61,63 @@ void APaperCharacterTower::OnRelease()
 
 void APaperCharacterTower::OnBeginCursor()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Mouse Detected"));
+	GetRenderComponent()->SetSpriteColor(FLinearColor::Green);
 }
 
 void APaperCharacterTower::OnEndCursor()
 {
+	GetRenderComponent()->SetSpriteColor(FLinearColor::White);
+}
 
+void APaperCharacterTower::CheckAutoAttack()
+{
+	FCollisionQueryParams CollisionParams;
+	CollisionParams.AddIgnoredActor(this);
+	//CollisionParams.AddIgnoredActor(ACharacterTower);
+	//If an enemy is within a certain radius, attack and begin a cooldown timer for the next attack
+	GetWorld()->OverlapMultiByChannel(
+		//output list
+		overlaps,
+		//origin location
+		this->GetActorLocation(),
+		//origin rotation
+		FQuat::Identity,
+		//collision channel
+		ECollisionChannel::ECC_Pawn,
+		//collision primitive
+		FCollisionShape::MakeSphere(baseAggroRadius),
+		//collision parameters
+		CollisionParams);
+
+	bool isEnemy = false;
+	for (int32 i = 0; i < overlaps.Num(); i++)
+	{
+		/*
+		Replace ACharacter with appropriate enemy class
+		Make sure to make a generic enemy class that other enemy types based off of if you want to minimize the workload
+		*/
+		ACharacter* enemy = Cast<ACharacter>(overlaps[i].GetActor());
+		if (enemy != nullptr)
+		{
+			isEnemy = true;
+		}
+	}
+	if (isEnemy && bIsAutoAttackReady)
+	{
+		bIsAutoAttackReady = false;
+		GetRenderComponent()->SetFlipbook(attackAnimation);
+		GetWorldTimerManager().SetTimer(autoAttackTimer, this, &APaperCharacterTower::EndAutoAttackCooldown, baseFirerate);
+		
+	}
+	else if (!isEnemy && bIsAutoAttackReady)
+	{
+		GetRenderComponent()->SetFlipbook(idleAnimation);
+	}
+	
+}
+
+void APaperCharacterTower::EndAutoAttackCooldown()
+{
+	bIsAutoAttackReady = true;
+	overlaps.Empty();
 }
